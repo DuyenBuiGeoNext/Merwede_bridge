@@ -1,0 +1,1780 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 11,
+  "graphTooltip": 1,
+  "id": 187,
+  "links": [
+    {
+      "asDropdown": false,
+      "icon": "external link",
+      "includeVars": false,
+      "keepTime": false,
+      "tags": [],
+      "targetBlank": false,
+      "title": "Merwede Totalstation monitoring",
+      "tooltip": "",
+      "type": "link",
+      "url": "https://coffeecup.geonext.nl/d/cf5wgro9k3aiob/merwede?orgId=1"
+    }
+  ],
+  "panels": [
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "ff6t87ui70074b"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "decimals": 1,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 8,
+      "options": {
+        "basemap": {
+          "config": {
+            "attribution": "Esri Nederland, Community Maps Contributors | © <a href=\"https://luchtfoto.prorail.nl/\">ProRail</a> Powered by <a href=\"http://www.esri.com/\">Esri</a> HR Luchtfoto - actueel van <a href=\"https://www.pdok.nl/\">PDOK</a>",
+            "server": "custom",
+            "url": "https://service.pdok.nl/hwh/luchtfotorgb/wmts/v1_0/Actueel_orthoHR/EPSG:3857/{z}/{x}/{y}.jpeg"
+          },
+          "name": "Layer 0",
+          "opacity": 1,
+          "type": "esri-xyz"
+        },
+        "controls": {
+          "mouseWheelZoom": true,
+          "showAttribution": false,
+          "showDebug": false,
+          "showMeasure": true,
+          "showScale": true,
+          "showZoom": true
+        },
+        "layers": [
+          {
+            "config": {
+              "server": "custom",
+              "url": "https://luchtfoto.prorail.nl:443/erdas-iws/ogc/wmts/Luchtfoto/meest_recent/default/GoogleMapsCompatibleExt2:epsg:3857/{z}/{y}/{x}.png"
+            },
+            "name": "Layer 2",
+            "opacity": 1,
+            "tooltip": true,
+            "type": "esri-xyz"
+          },
+          {
+            "config": {
+              "showLegend": true,
+              "style": {
+                "color": {
+                  "fixed": "dark-orange"
+                },
+                "opacity": 0.5,
+                "rotation": {
+                  "fixed": 0,
+                  "max": 360,
+                  "min": -360,
+                  "mode": "mod"
+                },
+                "size": {
+                  "fixed": 7,
+                  "max": 30,
+                  "min": 1
+                },
+                "symbol": {
+                  "fixed": "img/icons/marker/circle.svg",
+                  "mode": "fixed"
+                },
+                "symbolAlign": {
+                  "horizontal": "center",
+                  "vertical": "center"
+                },
+                "text": {
+                  "field": "name",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "textConfig": {
+                  "fontSize": 15,
+                  "offsetX": -40,
+                  "offsetY": 31,
+                  "textAlign": "right",
+                  "textBaseline": "bottom"
+                }
+              }
+            },
+            "filterData": {
+              "id": "byRefId",
+              "options": "A"
+            },
+            "location": {
+              "latitude": "lat",
+              "longitude": "lon",
+              "mode": "coords"
+            },
+            "name": "GPS",
+            "tooltip": true,
+            "type": "markers"
+          }
+        ],
+        "tooltip": {
+          "mode": "details"
+        },
+        "view": {
+          "allLayers": false,
+          "id": "coords",
+          "lastOnly": false,
+          "lat": 51.827299,
+          "layer": "Layer 2",
+          "lon": 4.94261,
+          "shared": true,
+          "zoom": 17.06
+        }
+      },
+      "pluginVersion": "11.5.1",
+      "targets": [
+        {
+          "dataset": "basetime_data",
+          "datasource": {
+            "type": "mysql",
+            "uid": "ff6t87ui70074b"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT 'noord_west_boog_01' AS name, MAX(wgs84_latitude)  AS lat,\r\n       MAX(wgs84_longitude) AS lon\r\nFROM basetime_data.noord_west_boog_01\r\n\r\nUNION ALL\r\nSELECT 'noord_west_boog_02', MAX(wgs84_latitude), MAX(wgs84_longitude)\r\nFROM basetime_data.noord_west_boog_02\r\n\r\nUNION ALL\r\nSELECT 'noord_west_boog_03', MAX(wgs84_latitude), MAX(wgs84_longitude)\r\nFROM basetime_data.noord_west_boog_03\r\n\r\nUNION ALL\r\nSELECT 'noord_oost_boog_01', MAX(wgs84_latitude), MAX(wgs84_longitude)\r\nFROM basetime_data.noord_oost_boog_01\r\n\r\nUNION ALL\r\nSELECT 'noord_oost_boog_02', MAX(wgs84_latitude), MAX(wgs84_longitude)\r\nFROM basetime_data.noord_oost_boog_02\r\n\r\nUNION ALL\r\nSELECT 'noord_oost_boog_03', MAX(wgs84_latitude), MAX(wgs84_longitude)\r\nFROM basetime_data.noord_oost_boog_03\r\n\r\nUNION ALL\r\nSELECT 'zuid_oost_boog_01', MAX(wgs84_latitude), MAX(wgs84_longitude)\r\nFROM basetime_data.zuid_oost_boog_01\r\n\r\nUNION ALL\r\nSELECT 'zuid_oost_boog_02', MAX(wgs84_latitude), MAX(wgs84_longitude)\r\nFROM basetime_data.zuid_oost_boog_02\r\n\r\nUNION ALL\r\nSELECT 'zuid_oost_boog_03', MAX(wgs84_latitude), MAX(wgs84_longitude)\r\nFROM basetime_data.zuid_oost_boog_03\r\n\r\nUNION ALL\r\nSELECT 'zuid_west_boog_01', MAX(wgs84_latitude), MAX(wgs84_longitude)\r\nFROM basetime_data.zuid_west_boog_01\r\n\r\nUNION ALL\r\nSELECT 'zuid_west_boog_02', MAX(wgs84_latitude), MAX(wgs84_longitude)\r\nFROM basetime_data.zuid_west_boog_02\r\n\r\nUNION ALL\r\nSELECT 'zuid_west_boog_03', MAX(wgs84_latitude), MAX(wgs84_longitude)\r\nFROM basetime_data.zuid_west_boog_03;\r\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "name": "MAX",
+                "parameters": [
+                  {
+                    "name": "wgs84_latitude",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "name": "MAX",
+                "parameters": [
+                  {
+                    "name": "wgs84_longitude",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "name": "MAX",
+                "parameters": [
+                  {
+                    "name": "wgs84_height",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [],
+            "limit": 50
+          },
+          "table": "noord_oost_boog_01"
+        }
+      ],
+      "title": "Basetime Monitoring",
+      "type": "geomap"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "ff6t87ui70074b"
+      },
+      "description": "Displacement relative to the first measurement: For each timestamp, the displacement in each coordinate (easting, northing, height) is calculated relative to the first GPS measurement.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": true,
+            "axisCenteredZero": true,
+            "axisColorMode": "text",
+            "axisGridShow": true,
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "axisSoftMax": 53,
+            "axisSoftMin": -53,
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "always",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "fieldMinMax": true,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "mm"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Vertical Displacement"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Horizontal Displacement"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Total 3D Displacment"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Vertical Displacement (mm)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Horizontal Displacement (mm)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Total 3D Displacment (mm)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature_celsius"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-red",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.lineWidth",
+                "value": 3
+              },
+              {
+                "id": "custom.pointSize",
+                "value": 0
+              },
+              {
+                "id": "custom.lineInterpolation",
+                "value": "smooth"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 8,
+        "x": 0,
+        "y": 13
+      },
+      "id": 2,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.5.1",
+      "targets": [
+        {
+          "dataset": "basetime_data",
+          "datasource": {
+            "type": "mysql",
+            "uid": "ff6t87ui70074b"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "\r\nWITH Deltas AS (\r\n    SELECT\r\n        measurement_timestamp as time,\r\n        local_easting - AVG(local_easting) OVER (ORDER BY time ASC) AS delta_easting,\r\n        local_northing - FIRST_VALUE(local_northing) OVER (ORDER BY time ASC) AS delta_northing,\r\n        local_height - FIRST_VALUE(local_height) OVER (ORDER BY time ASC) AS delta_height\r\n    FROM\r\n        basetime_data.$GPS_Location\r\n    ORDER BY time ASC\r\n)\r\nSELECT\r\n    time,\r\n    delta_height * 1000 AS \"Vertical Displacement (mm)\",\r\n    (SQRT(POW(delta_easting, 2) + POW(delta_northing, 2))) * 1000 AS \"Horizontal Displacement (mm)\",\r\n    (SQRT(POW(delta_easting, 2) + POW(delta_northing, 2) + POW(delta_height, 2))) * 1000 AS \"Total 3D Displacment (mm)\"\r\n\r\nFROM\r\n    Deltas\r\nORDER BY\r\n    time ASC;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "timeFrom": "1h",
+      "title": "Displacement Relative To The First Measurement $GPS_Location",
+      "transparent": true,
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "ff6t87ui70074b"
+      },
+      "description": "Displacement between consecutive measurements: The function compares each value (easting, northing, height) with the previous row, and calculates the change in position between consecutive timestamps.\n\nThis helps you track movement over time, and you can detect trends or shifts in the data.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": true,
+            "axisCenteredZero": true,
+            "axisColorMode": "text",
+            "axisGridShow": true,
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "axisSoftMax": 53,
+            "axisSoftMin": -53,
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "always",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "fieldMinMax": true,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "mm"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Vertical Displacement"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Horizontal Displacement"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Total 3D Displacment"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Vertical Displacement (mm)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Horizontal Displacement (mm)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Total 3D Displacement (mm)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 8,
+        "x": 8,
+        "y": 13
+      },
+      "id": 9,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.5.1",
+      "targets": [
+        {
+          "dataset": "basetime_data",
+          "datasource": {
+            "type": "mysql",
+            "uid": "ff6t87ui70074b"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "WITH Deltas AS (\r\n    SELECT\r\n        measurement_timestamp AS time,\r\n        local_easting - LAG(local_easting) OVER (ORDER BY measurement_timestamp ASC) AS delta_easting,\r\n        local_northing - LAG(local_northing) OVER (ORDER BY measurement_timestamp ASC) AS delta_northing,\r\n        local_height - LAG(local_height) OVER (ORDER BY measurement_timestamp ASC) AS delta_height\r\n    FROM\r\n        basetime_data.$GPS_Location\r\n    ORDER BY time ASC\r\n)\r\nSELECT\r\n    time,\r\n    delta_height * 1000 AS \"Vertical Displacement (mm)\",\r\n    (SQRT(POW(delta_easting, 2) + POW(delta_northing, 2))) * 1000 AS \"Horizontal Displacement (mm)\",\r\n    (SQRT(POW(delta_easting, 2) + POW(delta_northing, 2) + POW(delta_height, 2))) * 1000 AS \"Total 3D Displacement (mm)\"\r\nFROM\r\n    Deltas\r\nWHERE\r\n    delta_easting IS NOT NULL \r\nORDER BY\r\n    time ASC;\r\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "timeFrom": "1h",
+      "title": "Cumulative Displacement (Relative to Previous Measurement) $GPS_Location",
+      "transparent": true,
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "ff6t87ui70074b"
+      },
+      "description": "Moving Average:\n\nVertical Moving Average: The average of the last $Moving_Average values for vertical displacement.\n\nHorizontal Moving Average: The average of the last $Moving_Average values for horizontal displacement.\n\nTotal 3D Moving Average: The average of the last $Moving_Average values for the total 3D displacement.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": true,
+            "axisCenteredZero": true,
+            "axisColorMode": "text",
+            "axisGridShow": true,
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "axisSoftMax": 30,
+            "axisSoftMin": -30,
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "always",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "fieldMinMax": true,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "mm"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Vertical Displacement"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Horizontal Displacement"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Total 3D Displacment"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Vertical Displacement (mm)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Horizontal Displacement (mm)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Total 3D Displacement (mm)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "__systemRef": "hideSeriesFrom",
+            "matcher": {
+              "id": "byNames",
+              "options": {
+                "mode": "exclude",
+                "names": [
+                  "Vertical Moving Avg (mm)",
+                  "Horizontal Moving Avg (mm)",
+                  "Total 3D Moving Avg (mm)"
+                ],
+                "prefix": "All except:",
+                "readOnly": true
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": true
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Vertical Moving Avg (mm)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Horizontal Moving Avg (mm)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Total 3D Moving Avg (mm)"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 8,
+        "x": 16,
+        "y": 13
+      },
+      "id": 10,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.5.1",
+      "targets": [
+        {
+          "dataset": "basetime_data",
+          "datasource": {
+            "type": "mysql",
+            "uid": "ff6t87ui70074b"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "WITH Deltas AS (\r\n    SELECT\r\n        measurement_timestamp AS time,\r\n        local_easting - LAG(local_easting) OVER (ORDER BY measurement_timestamp ASC) AS delta_easting,\r\n        local_northing - LAG(local_northing) OVER (ORDER BY measurement_timestamp ASC) AS delta_northing,\r\n        local_height - LAG(local_height) OVER (ORDER BY measurement_timestamp ASC) AS delta_height\r\n    FROM\r\n        basetime_data.$GPS_Location\r\n    ORDER BY time ASC\r\n)\r\nSELECT\r\n    time,\r\n    AVG(delta_height) OVER (ORDER BY time ASC ROWS BETWEEN $Moving_Average PRECEDING AND CURRENT ROW) * 1000 AS \"Vertical Moving Avg (mm)\",\r\n    AVG(SQRT(POW(delta_easting, 2) + POW(delta_northing, 2))) OVER (ORDER BY time ASC ROWS BETWEEN $Moving_Average PRECEDING AND CURRENT ROW) * 1000 AS \"Horizontal Moving Avg (mm)\",\r\n    AVG(SQRT(POW(delta_easting, 2) + POW(delta_northing, 2) + POW(delta_height, 2))) OVER (ORDER BY time ASC ROWS BETWEEN $Moving_Average PRECEDING AND CURRENT ROW) * 1000 AS \"Total 3D Moving Avg (mm)\"\r\n\r\nFROM\r\n    Deltas\r\nWHERE\r\n    delta_easting IS NOT NULL\r\nOrder by\r\n    time ASC\r\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "timeFrom": "1h",
+      "title": "Horizontal Vertical & 3D Moving Average: The average of the last $Moving_Average values for displacement. $GPS_Location",
+      "transparent": true,
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "ff6t87ui70074b"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": true,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisGridShow": true,
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "always",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 3,
+          "fieldMinMax": true,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Height"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Easting"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 22
+      },
+      "hideTimeOverride": false,
+      "id": 4,
+      "interval": "1h",
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.5.1",
+      "targets": [
+        {
+          "dataset": "basetime_data",
+          "datasource": {
+            "type": "mysql",
+            "uid": "ff6t87ui70074b"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT measurement_timestamp as time, local_easting as Easting FROM basetime_data.$GPS_Location ORDER BY time ASC\r\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "timeFrom": "1h",
+      "title": "$GPS_Location Easting",
+      "transparent": true,
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "ff6t87ui70074b"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": true,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisGridShow": true,
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "always",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 3,
+          "fieldMinMax": false,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Height"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "__systemRef": "hideSeriesFrom",
+            "matcher": {
+              "id": "byNames",
+              "options": {
+                "mode": "exclude",
+                "names": [
+                  "Northing"
+                ],
+                "prefix": "All except:",
+                "readOnly": true
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": true
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Northing"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 22
+      },
+      "id": 5,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.5.1",
+      "targets": [
+        {
+          "dataset": "basetime_data",
+          "datasource": {
+            "type": "mysql",
+            "uid": "ff6t87ui70074b"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT measurement_timestamp as time, local_northing as Northing FROM basetime_data.$GPS_Location ORDER BY time ASC\r\n-- WITH Deltas AS (\r\n--     SELECT\r\n--         measurement_timestamp as time,\r\n--         local_easting - FIRST_VALUE(local_easting) OVER (ORDER BY time ASC) AS delta_easting,\r\n--         local_northing - FIRST_VALUE(local_northing) OVER (ORDER BY time ASC) AS delta_northing,\r\n--         local_height - FIRST_VALUE(local_height) OVER (ORDER BY time ASC) AS delta_height\r\n--     FROM\r\n--         basetime_data.$GPS_Location\r\n-- )\r\n-- SELECT\r\n--     time,\r\n--     delta_height * 1000 AS \"Vertical Displacement\",\r\n--     (SQRT(POW(delta_easting, 2) + POW(delta_northing, 2))) * 1000 AS \"Horizontal Displacement\",\r\n--     -- Add this line for total 3D displacement\r\n--     (SQRT(POW(delta_easting, 2) + POW(delta_northing, 2) + POW(delta_height, 2))) * 1000 AS \"Total 3D Displacment\"\r\n-- FROM\r\n--     Deltas\r\n-- ORDER BY\r\n--     time ASC;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "timeFrom": "1h",
+      "title": "$GPS_Location Northing",
+      "transparent": true,
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "ff6t87ui70074b"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": true,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisGridShow": true,
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "always",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 3,
+          "fieldMinMax": false,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Height"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 22
+      },
+      "id": 3,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.5.1",
+      "targets": [
+        {
+          "dataset": "basetime_data",
+          "datasource": {
+            "type": "mysql",
+            "uid": "ff6t87ui70074b"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT measurement_timestamp as time, local_height as Hoogte FROM basetime_data.$GPS_Location ORDER BY time ASC\r\n-- WITH Deltas AS (\r\n--     SELECT\r\n--         measurement_timestamp as time,\r\n--         local_easting - FIRST_VALUE(local_easting) OVER (ORDER BY time ASC) AS delta_easting,\r\n--         local_northing - FIRST_VALUE(local_northing) OVER (ORDER BY time ASC) AS delta_northing,\r\n--         local_height - FIRST_VALUE(local_height) OVER (ORDER BY time ASC) AS delta_height\r\n--     FROM\r\n--         basetime_data.$GPS_Location\r\n-- )\r\n-- SELECT\r\n--     time,\r\n--     delta_height * 1000 AS \"Vertical Displacement\",\r\n--     (SQRT(POW(delta_easting, 2) + POW(delta_northing, 2))) * 1000 AS \"Horizontal Displacement\",\r\n--     -- Add this line for total 3D displacement\r\n--     (SQRT(POW(delta_easting, 2) + POW(delta_northing, 2) + POW(delta_height, 2))) * 1000 AS \"Total 3D Displacment\"\r\n-- FROM\r\n--     Deltas\r\n-- ORDER BY\r\n--     time ASC;",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "timeFrom": "1h",
+      "title": "$GPS_Location Hoogte",
+      "transparent": true,
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "ff6t87ui70074b"
+      },
+      "description": "Displacement relative to the first measurement: For each timestamp, the displacement in each coordinate (easting, northing, height) is calculated relative to the first GPS measurement.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd",
+            "seriesBy": "last"
+          },
+          "custom": {
+            "axisBorderShow": true,
+            "axisCenteredZero": true,
+            "axisColorMode": "text",
+            "axisGridShow": true,
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "axisSoftMax": 53,
+            "axisSoftMin": -10,
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 5,
+            "gradientMode": "scheme",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 4,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "always",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "fieldMinMax": true,
+          "mappings": [],
+          "min": -10,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "celsius"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 30
+      },
+      "id": 11,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.5.1",
+      "targets": [
+        {
+          "dataset": "basetime_data",
+          "datasource": {
+            "type": "mysql",
+            "uid": "ff6t87ui70074b"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "\r\n    SELECT\r\n        measurement_timestamp as time,\r\n\r\n        temperature_celsius\r\n    FROM\r\n        basetime_data.$GPS_Location\r\n    ORDER BY time ASC\r\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "timeFrom": "1h",
+      "title": "GPS Temperature  $GPS_Location",
+      "transparent": true,
+      "type": "timeseries"
+    }
+  ],
+  "preload": true,
+  "refresh": "",
+  "schemaVersion": 40,
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "allowCustomValue": false,
+        "current": {
+          "text": "zuid_oost_boog_01",
+          "value": "zuid_oost_boog_01"
+        },
+        "label": "GPS_Location",
+        "name": "GPS_Location",
+        "options": [
+          {
+            "selected": false,
+            "text": "noord_west_boog_01",
+            "value": "noord_west_boog_01"
+          },
+          {
+            "selected": false,
+            "text": "noord_west_boog_02",
+            "value": "noord_west_boog_02"
+          },
+          {
+            "selected": false,
+            "text": "noord_west_boog_03",
+            "value": "noord_west_boog_03"
+          },
+          {
+            "selected": false,
+            "text": "noord_oost_boog_01",
+            "value": "noord_oost_boog_01"
+          },
+          {
+            "selected": false,
+            "text": "noord_oost_boog_02",
+            "value": "noord_oost_boog_02"
+          },
+          {
+            "selected": false,
+            "text": "noord_oost_boog_03",
+            "value": "noord_oost_boog_03"
+          },
+          {
+            "selected": true,
+            "text": "zuid_oost_boog_01",
+            "value": "zuid_oost_boog_01"
+          },
+          {
+            "selected": false,
+            "text": "zuid_oost_boog_02",
+            "value": "zuid_oost_boog_02"
+          },
+          {
+            "selected": false,
+            "text": "zuid_oost_boog_03",
+            "value": "zuid_oost_boog_03"
+          },
+          {
+            "selected": false,
+            "text": "zuid_west_boog_01",
+            "value": "zuid_west_boog_01"
+          },
+          {
+            "selected": false,
+            "text": "zuid_west_boog_02",
+            "value": "zuid_west_boog_02"
+          },
+          {
+            "selected": false,
+            "text": "zuid_west_boog_03",
+            "value": "zuid_west_boog_03"
+          }
+        ],
+        "query": "noord_west_boog_01,noord_west_boog_02,noord_west_boog_03,noord_oost_boog_01,noord_oost_boog_02,noord_oost_boog_03,zuid_oost_boog_01,zuid_oost_boog_02,zuid_oost_boog_03,zuid_west_boog_01,zuid_west_boog_02,zuid_west_boog_03",
+        "type": "custom"
+      },
+      {
+        "allowCustomValue": true,
+        "current": {
+          "text": "7",
+          "value": "7"
+        },
+        "label": "Moving Average",
+        "name": "Moving_Average",
+        "options": [
+          {
+            "selected": false,
+            "text": "1",
+            "value": "1"
+          },
+          {
+            "selected": false,
+            "text": "2",
+            "value": "2"
+          },
+          {
+            "selected": false,
+            "text": "3",
+            "value": "3"
+          },
+          {
+            "selected": false,
+            "text": "4",
+            "value": "4"
+          },
+          {
+            "selected": false,
+            "text": "5",
+            "value": "5"
+          },
+          {
+            "selected": false,
+            "text": "6",
+            "value": "6"
+          },
+          {
+            "selected": true,
+            "text": "7",
+            "value": "7"
+          },
+          {
+            "selected": false,
+            "text": "8",
+            "value": "8"
+          },
+          {
+            "selected": false,
+            "text": "9",
+            "value": "9"
+          },
+          {
+            "selected": false,
+            "text": "10",
+            "value": "10"
+          },
+          {
+            "selected": false,
+            "text": "11",
+            "value": "11"
+          },
+          {
+            "selected": false,
+            "text": "12",
+            "value": "12"
+          },
+          {
+            "selected": false,
+            "text": "13",
+            "value": "13"
+          },
+          {
+            "selected": false,
+            "text": "14",
+            "value": "14"
+          },
+          {
+            "selected": false,
+            "text": "15",
+            "value": "15"
+          },
+          {
+            "selected": false,
+            "text": "20",
+            "value": "20"
+          },
+          {
+            "selected": false,
+            "text": "40",
+            "value": "40"
+          },
+          {
+            "selected": false,
+            "text": "60",
+            "value": "60"
+          },
+          {
+            "selected": false,
+            "text": "80",
+            "value": "80"
+          },
+          {
+            "selected": false,
+            "text": "100",
+            "value": "100"
+          }
+        ],
+        "query": "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,20,40,60,80,100",
+        "type": "custom"
+      }
+    ]
+  },
+  "time": {
+    "from": "2025-07-03T10:00:00.000Z",
+    "to": "2026-03-30T09:00:00.000Z"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "timezone": "Europe/Amsterdam",
+  "title": "Basetime",
+  "uid": "df6v1d45rfa4gc",
+  "version": 58,
+  "weekStart": "monday"
+}

@@ -1,0 +1,64 @@
+From the API a total amount of 1348 measurement points were extracted
+The block 2026-03-25 18:00:00+00:00 -- 2026-03-25 22:00:00+00:00 is rejected, has too little points (320)
+The block 2026-03-25 22:00:00+00:00 -- 2026-03-26 02:00:00+00:00 is rejected, has too little points (318)
+The block 2026-03-26 02:00:00+00:00 -- 2026-03-26 06:00:00+00:00 is rejected, has too little points (320)
+The block 2026-03-26 06:00:00+00:00 -- 2026-03-26 10:00:00+00:00 is rejected, has too little points (313)
+The block 2026-03-26 10:00:00+00:00 -- 2026-03-26 14:00:00+00:00 is rejected, inner time difference is 0 days 00:54:55.460000
+The block 2026-03-26 10:00:00+00:00 -- 2026-03-26 14:00:00+00:00 is rejected, time difference with block end is 0 days 03:04:44.340000
+The API results were divided in a total amount of 0 block(s)
+From the API a total amount of 1348 measurement points were extracted
+The block 2026-03-25 18:00:00+00:00 -- 2026-03-25 22:00:00+00:00 is rejected, has too little points (320)
+The block 2026-03-25 22:00:00+00:00 -- 2026-03-26 02:00:00+00:00 is rejected, has too little points (318)
+The block 2026-03-26 02:00:00+00:00 -- 2026-03-26 06:00:00+00:00 is rejected, has too little points (320)
+The block 2026-03-26 06:00:00+00:00 -- 2026-03-26 10:00:00+00:00 is rejected, has too little points (313)
+The block 2026-03-26 10:00:00+00:00 -- 2026-03-26 14:00:00+00:00 is rejected, inner time difference is 0 days 00:54:55.460000
+The block 2026-03-26 10:00:00+00:00 -- 2026-03-26 14:00:00+00:00 is rejected, time difference with block end is 0 days 03:04:44.340000
+The API results were divided in a total amount of 0 block(s)
+From the API a total amount of 1348 measurement points were extracted
+The block 2026-03-25 18:00:00+00:00 -- 2026-03-25 22:00:00+00:00 is rejected, has too little points (320)
+The block 2026-03-25 22:00:00+00:00 -- 2026-03-26 02:00:00+00:00 is rejected, has too little points (318)
+The block 2026-03-26 02:00:00+00:00 -- 2026-03-26 06:00:00+00:00 is rejected, has too little points (320)
+The block 2026-03-26 06:00:00+00:00 -- 2026-03-26 10:00:00+00:00 is rejected, has too little points (313)
+The block 2026-03-26 10:00:00+00:00 -- 2026-03-26 14:00:00+00:00 is rejected, inner time difference is 0 days 00:54:55.460000
+The block 2026-03-26 10:00:00+00:00 -- 2026-03-26 14:00:00+00:00 is rejected, time difference with block end is 0 days 03:04:44.340000
+The API results were divided in a total amount of 0 block(s)
+From the API a total amount of 1348 measurement points were extracted
+The block 2026-03-25 18:00:00+00:00 -- 2026-03-25 22:00:00+00:00 is rejected, has too little points (320)
+The block 2026-03-25 22:00:00+00:00 -- 2026-03-26 02:00:00+00:00 is rejected, has too little points (318)
+The block 2026-03-26 02:00:00+00:00 -- 2026-03-26 06:00:00+00:00 is rejected, has too little points (320)
+The block 2026-03-26 06:00:00+00:00 -- 2026-03-26 10:00:00+00:00 is rejected, has too little points (313)
+The block 2026-03-26 10:00:00+00:00 -- 2026-03-26 14:00:00+00:00 is rejected, inner time difference is 0 days 00:54:55.460000
+The block 2026-03-26 10:00:00+00:00 -- 2026-03-26 14:00:00+00:00 is rejected, time difference with block end is 0 days 03:04:44.340000
+The API results were divided in a total amount of 0 block(s)
+From the API a total amount of 1348 measurement points were extracted
+The block 2026-03-25 18:00:00+00:00 -- 2026-03-25 22:00:00+00:00 is rejected, has too little points (320)
+The block 2026-03-25 22:00:00+00:00 -- 2026-03-26 02:00:00+00:00 is rejected, has too little points (318)
+The block 2026-03-26 02:00:00+00:00 -- 2026-03-26 06:00:00+00:00 is rejected, has too little points (320)
+The block 2026-03-26 06:00:00+00:00 -- 2026-03-26 10:00:00+00:00 is rejected, has too little points (313)
+The block 2026-03-26 10:00:00+00:00 -- 2026-03-26 14:00:00+00:00 is rejected, inner time difference is 0 days 00:54:55.460000
+The block 2026-03-26 10:00:00+00:00 -- 2026-03-26 14:00:00+00:00 is rejected, time difference with block end is 0 days 03:04:44.340000
+The API results were divided in a total amount of 0 block(s)
+From the API a total amount of 1348 measurement points were extracted
+The block 2026-03-25 18:00:00+00:00 -- 2026-03-25 22:00:00+00:00 is rejected, has too little points (320)
+The block 2026-03-25 22:00:00+00:00 -- 2026-03-26 02:00:00+00:00 is rejected, has too little points (318)
+The block 2026-03-26 02:00:00+00:00 -- 2026-03-26 06:00:00+00:00 is rejected, has too little points (320)
+The block 2026-03-26 06:00:00+00:00 -- 2026-03-26 10:00:00+00:00 is rejected, has too little points (313)
+The block 2026-03-26 10:00:00+00:00 -- 2026-03-26 14:00:00+00:00 is rejected, inner time difference is 0 days 00:54:55.460000
+The block 2026-03-26 10:00:00+00:00 -- 2026-03-26 14:00:00+00:00 is rejected, time difference with block end is 0 days 03:04:44.340000
+The API results were divided in a total amount of 0 block(s)
+From the API a total amount of 1348 measurement points were extracted
+The block 2026-03-25 18:00:00+00:00 -- 2026-03-25 22:00:00+00:00 is rejected, has too little points (320)
+The block 2026-03-25 22:00:00+00:00 -- 2026-03-26 02:00:00+00:00 is rejected, has too little points (318)
+The block 2026-03-26 02:00:00+00:00 -- 2026-03-26 06:00:00+00:00 is rejected, has too little points (320)
+The block 2026-03-26 06:00:00+00:00 -- 2026-03-26 10:00:00+00:00 is rejected, has too little points (313)
+The block 2026-03-26 10:00:00+00:00 -- 2026-03-26 14:00:00+00:00 is rejected, inner time difference is 0 days 00:54:55.460000
+The block 2026-03-26 10:00:00+00:00 -- 2026-03-26 14:00:00+00:00 is rejected, time difference with block end is 0 days 03:04:44.340000
+The API results were divided in a total amount of 0 block(s)
+From the API a total amount of 1348 measurement points were extracted
+The block 2026-03-25 18:00:00+00:00 -- 2026-03-25 22:00:00+00:00 is rejected, has too little points (320)
+The block 2026-03-25 22:00:00+00:00 -- 2026-03-26 02:00:00+00:00 is rejected, has too little points (318)
+The block 2026-03-26 02:00:00+00:00 -- 2026-03-26 06:00:00+00:00 is rejected, has too little points (320)
+The block 2026-03-26 06:00:00+00:00 -- 2026-03-26 10:00:00+00:00 is rejected, has too little points (313)
+The block 2026-03-26 10:00:00+00:00 -- 2026-03-26 14:00:00+00:00 is rejected, inner time difference is 0 days 00:54:55.460000
+The block 2026-03-26 10:00:00+00:00 -- 2026-03-26 14:00:00+00:00 is rejected, time difference with block end is 0 days 03:04:44.340000
+The API results were divided in a total amount of 0 block(s)

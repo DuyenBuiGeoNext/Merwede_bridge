@@ -1,0 +1,242 @@
+{ 
+    "Pijler1": {
+        "prism_data": {
+            "prism_names": [
+                "03_P1_0",
+                "04_P1_0",
+                "01_P1_0",
+                "02_P1_0"
+            ],
+            "prism_dist_constant": 24.88
+        },
+        "opleg_data": {
+            "Brug": {
+                "opleg_zdiff_west": 1.514,
+                "opleg_zdiff_east": 1.541 
+            }
+        }
+    },
+    "Pijler2": {
+        "prism_data": {
+            "prism_names": [
+                "07_P2_0",
+                "08_P2_0",
+                "05_P2_0",
+                "06_P2_0"
+            ],
+            "prism_dist_constant": 24.84
+        },
+        "opleg_data": {
+            "Brug": {
+                "opleg_dist_const": 22.62,
+                "opleg_zdiff_west": 1.434,
+                "opleg_zdiff_east": 1.444
+            }
+        }
+    },
+    "Pijler3": {
+        "prism_data": {
+            "prism_names": [
+                "11_P3_0",
+                "12_P3_0",
+                "09_P3_0",
+                "10_P3_0"
+            ],
+            "prism_dist_constant": 24.84
+        },
+        "opleg_data": {
+            "Brug": {
+                "opleg_dist_const": 22.62,
+                "opleg_zdiff_west": 1.382,
+                "opleg_zdiff_east": 1.412
+            }
+        }
+    },
+    "Pijler4": {
+        "prism_data": {
+            "prism_names": [
+                "TS1-1",
+                "TS1-1",
+                "TS2",
+                "TS2"
+            ],
+            "prism_dist_constant": 29.63,
+            "left_prism_offset": 5.422,
+        
+            "right_prism_offset": 2.596
+        },
+        "opleg_data": {
+            "Brug": {
+                "opleg_dist_const": 24,
+                "opleg_zdiff_west": 5.346,
+                "opleg_zdiff_east": 6.198
+            },
+            "Hoofd": {
+                "opleg_dist_const": 16.8,
+                "opleg_zdiff_west": 3.172,
+                "opleg_zdiff_east": 4.024
+            },
+            "Neven": {
+                "opleg_dist_const": 16.8,
+                "opleg_zdiff_west": 3.728,
+                "opleg_zdiff_east": 4.58
+            }
+        }
+    },
+    "Pijler5": {
+        "prism_data": {
+            "prism_names": [
+                "15_P5_1",
+                "16_P5_1",
+                "13_P5_1",
+                "14_P5_1"
+            ],
+            "prism_dist_constant": 21.99
+        },
+        "opleg_data": {
+            "Hoofd": {
+                "opleg_dist_const": 16.8,
+                "opleg_zdiff_west": 2.69,
+                "opleg_zdiff_east": 2.68
+            }
+        }
+    },
+    "Pijler6": {
+        "prism_data": {
+            "prism_names": [
+                "20_P6_1",
+                "21_P6_1",
+                "18_P6_1",
+                "19_P6_1"
+            ],
+            "prism_dist_constant": 21.58
+        },
+        "opleg_data": {
+            "Hoofd": {
+                "opleg_dist_const": 16.8,
+                "opleg_zdiff_west": -0.33,
+                "opleg_zdiff_east": 0.09
+            },
+            "Neven": {
+                "opleg_dist_const": 16.8,
+                "opleg_zdiff_west": 0.34,
+                "opleg_zdiff_east": 0.76
+            },
+            "Voorhar": {
+                "opleg_dist_const": 16.8,
+                "opleg_zdiff_west": 0.30,
+                "opleg_zdiff_east": 0.72
+            }
+        }
+    },
+    "Basculekelder": {
+        "prism_data": {
+            "prism_names": [
+                "25_KW_0",
+                "26_KW_0",
+                "23_KW_0",
+                "24_KW_0"
+            ],
+            "prism_dist_constant": 19.1
+        },
+        "opleg_data": {
+            "Brug": {
+                "opleg_dist_const": 16.8,
+                "opleg_zdiff_west": 5.58,
+                "opleg_zdiff_east": 5.58
+            }
+        }
+    },
+    "Pijler7": {
+        "prism_data": {
+            "prism_names": [
+                "33_P7_0",
+                "34_P7_0",
+                "31_P7_0",
+                "32_P7_0"
+            ],
+            "prism_dist_constant": 24.77
+        },
+        "opleg_data": {
+            "Brug": {
+                "opleg_dist_const": 22.62,
+                "opleg_zdiff_west": 0.72,
+                "opleg_zdiff_east": 0.78
+            }
+        }
+    },
+    "Pijler8": {
+        "prism_data": {
+            "prism_names": [
+                "TS5",
+                "TS5",
+                "TS4",
+                "TS4"
+            ],
+            "prism_dist_constant": 26.35,
+            "left_prism_offset": 0.815,
+            "right_prism_offset": 1.005
+        },
+        "opleg_data": {
+            "Brug": {
+                "opleg_dist_const": 22.62,
+                "opleg_zdiff_west": 1.63,
+                "opleg_zdiff_east": 1.63
+            }
+        }
+    },
+    "Pijler9": {
+        "prism_data": {
+            "prism_names": [
+                "37_P9_0",
+                "38_P9_0",
+                "35_P9_0",
+                "36_P9_0"
+            ],
+            "prism_dist_constant": 24.73
+        },
+        "opleg_data": {
+            "Brug": {
+                "opleg_dist_const": 22.62,
+                "opleg_zdiff_west": 0.71,
+                "opleg_zdiff_east": 0.89
+            }
+        }
+    },
+    "LandhoofdNoord": {
+        "prism_data": {
+            "prism_names": [
+                "39_LHN_0",
+                "42_LHN_0",
+                "40_LHN_0",
+                "41_LHN_0"
+            ],
+            "prism_dist_constant": 24.35
+        },
+        "opleg_data": {
+            "Brug": {
+                "opleg_dist_const": 22.613,
+                "opleg_zdiff_west": -1.435,
+                "opleg_zdiff_east": -1.432
+            }
+        }
+    },
+    "LandhoofdZuid": {
+        "prism_data": {
+            "prism_names": [
+                "00b_LHZ_0",
+                "00d_LHZ_0",
+                "00a_LHZ_0",
+                "00c_LHZ_0"
+            ],
+            "prism_dist_constant": 24.57
+        },
+        "opleg_data": {
+            "Brug": {
+                "opleg_dist_const": 23.13,
+                "opleg_zdiff_west": 0.9458,
+                "opleg_zdiff_east": 0.954 
+            }
+        }
+    }
+}
