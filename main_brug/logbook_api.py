@@ -17,8 +17,10 @@ from flask_cors import CORS
 from sqlalchemy import create_engine, text
 from dotenv import load_dotenv
 import os
+import time
+import threading
 import pandas as pd
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -78,18 +80,41 @@ def create_tables():
         #   reviewed_by  (str)      - name of the approver who acted on it (NULL until reviewed)
         conn.execute(text("""
             CREATE TABLE IF NOT EXISTS trigger_values_pending (
-                id           INT AUTO_INCREMENT PRIMARY KEY,
-                submitted_at DATETIME NOT NULL,
-                category     VARCHAR(100),
-                object       VARCHAR(150),
-                old_value    FLOAT,
-                new_value    FLOAT,
-                status       VARCHAR(20) DEFAULT 'pending',
-                changed_by   VARCHAR(100),
-                reviewed_by  VARCHAR(100),
-                reason       TEXT
+                id            INT AUTO_INCREMENT PRIMARY KEY,
+                submitted_at  DATETIME NOT NULL,
+                category      VARCHAR(100),
+                object        VARCHAR(150),
+                old_value     FLOAT,
+                new_value     FLOAT,
+                status        VARCHAR(20) DEFAULT 'pending',
+                changed_by       VARCHAR(100),
+                changed_by_email VARCHAR(150),
+                reviewed_by      VARCHAR(100),
+                reason           TEXT,
+                reminder_sent    TINYINT(1) DEFAULT 0
             )
         """))
+        # Add reminder_sent to the table if it was created before this column existed
+        col_exists = conn.execute(text("""
+            SELECT COUNT(*) FROM information_schema.COLUMNS
+            WHERE TABLE_SCHEMA = DATABASE()
+              AND TABLE_NAME   = 'trigger_values_pending'
+              AND COLUMN_NAME  = 'reminder_sent'
+        """)).scalar()
+        if col_exists == 0:
+            conn.execute(text(
+                "ALTER TABLE trigger_values_pending ADD COLUMN reminder_sent TINYINT(1) DEFAULT 0"
+            ))
+        email_col = conn.execute(text("""
+            SELECT COUNT(*) FROM information_schema.COLUMNS
+            WHERE TABLE_SCHEMA = DATABASE()
+              AND TABLE_NAME   = 'trigger_values_pending'
+              AND COLUMN_NAME  = 'changed_by_email'
+        """)).scalar()
+        if email_col == 0:
+            conn.execute(text(
+                "ALTER TABLE trigger_values_pending ADD COLUMN changed_by_email VARCHAR(150)"
+            ))
 
         # event_log: generic log for any notable activity in the system
         #   id          (int)      - auto-incremented primary key
@@ -110,8 +135,10 @@ def create_tables():
                 description TEXT
             )
         """))
-        # request_status: single-row table that tracks the current change-request state
-        #   status_message is displayed in a Grafana text panel
+
+        # request_status: single-row table — tracks the current change-request state
+        #   displayed in a Grafana text panel so operators can see at a glance
+        #   whether a threshold change is waiting for approval
         conn.execute(text("""
             CREATE TABLE IF NOT EXISTS request_status (
                 id             INT AUTO_INCREMENT PRIMARY KEY,
@@ -143,14 +170,122 @@ def _update_request_status(conn, message):
     """), {"msg": message, "now": datetime.now(timezone.utc)})
 
 
+def _check_and_send_reminders(conn):
+    # Sends a reminder email for pending rows that have been waiting 24+ hours
+    # but have not yet expired (< 48 h) and have not yet received a reminder.
+    now         = datetime.now(timezone.utc)
+    cutoff_24h  = now - timedelta(hours=24)
+    cutoff_48h  = now - timedelta(hours=48)
+
+    result = conn.execute(text("""
+        SELECT * FROM trigger_values_pending
+        WHERE status        = 'pending'
+          AND reminder_sent = 0
+          AND submitted_at <= :cutoff_24h
+          AND submitted_at  > :cutoff_48h
+    """), {"cutoff_24h": cutoff_24h, "cutoff_48h": cutoff_48h})
+    rows = [dict(row._mapping) for row in result]
+
+    if not rows:
+        return
+
+    print(f"Sending reminder email for {len(rows)} pending row(s) older than 24 hours.")
+    change_summary = [
+        f"{r['object']}: {r['old_value']} → {r['new_value']}  (submitted by {r['changed_by']} at {r['submitted_at']})"
+        for r in rows
+    ]
+    send_reminder_email(rows[0]["changed_by"], change_summary)
+
+    # Mark reminder as sent so we don't email again for the same rows
+    id_list = ", ".join(str(r["id"]) for r in rows)
+    conn.execute(text(
+        f"UPDATE trigger_values_pending SET reminder_sent = 1 WHERE id IN ({id_list})"
+    ))
+
+
+def _expire_pending_requests(conn):
+    # Marks any pending rows older than 48 hours as 'expired', resets the status table,
+    # and notifies the requester by email.
+    cutoff = datetime.now(timezone.utc) - timedelta(hours=48)
+    result = conn.execute(text("""
+        SELECT * FROM trigger_values_pending
+        WHERE status = 'pending' AND submitted_at < :cutoff
+    """), {"cutoff": cutoff})
+    rows = [dict(r._mapping) for r in result]
+
+    if not rows:
+        return
+
+    id_list = ", ".join(str(r["id"]) for r in rows)
+    conn.execute(text(
+        f"UPDATE trigger_values_pending SET status = 'expired' WHERE id IN ({id_list})"
+    ))
+    _update_request_status(conn, "No change requested")
+    print(f"Expired {len(rows)} pending request(s) older than 48 hours.")
+
+    change_summary = [f"{r['object']}: {r['old_value']} → {r['new_value']}" for r in rows]
+    send_requester_notification(
+        rows[0].get("changed_by_email") or "",
+        rows[0].get("changed_by") or "unknown",
+        "expired",
+        change_summary,
+    )
+
+
+def send_reminder_email(changed_by, change_summary):
+    # Sends a 24-hour reminder to approvers for pending changes not yet reviewed.
+    smtp_host   = (os.getenv("SMTP_HOST") or "").strip()
+    smtp_port   = int((os.getenv("SMTP_PORT") or "587").strip())
+    smtp_user   = (os.getenv("SMTP_USER") or "").strip()
+    smtp_pass   = (os.getenv("SMTP_PASSWORD") or "").strip()
+    grafana_url = (os.getenv("GRAFANA_URL") or "your Grafana dashboard").strip()
+    recipients  = [e.strip() for e in os.getenv("APPROVER_EMAILS", "").split(",") if e.strip()]
+
+    if not recipients:
+        print("No approver emails configured — skipping reminder email.")
+        return
+
+    change_lines = "\n".join(f"  - {line}" for line in change_summary)
+    body = f"""\
+Dear approver,
+
+This is a reminder that the following threshold change request submitted by {changed_by}
+has been waiting for approval for more than 24 hours and has not yet been reviewed:
+
+{change_lines}
+
+WARNING: If no action is taken, this request will expire within the next 24 hours.
+Please review them by visiting the Grafana dashboard:
+
+  {grafana_url}
+
+This is an automated message from the Merwede Bridge monitoring system.
+"""
+
+    msg = MIMEMultipart()
+    msg["From"]    = smtp_user
+    msg["To"]      = ", ".join(recipients)
+    msg["Subject"] = f"[Merwedebrug] REMINDER: Threshold change approval still pending — submitted by {changed_by}"
+    msg.attach(MIMEText(body, "plain"))
+
+    try:
+        with smtplib.SMTP(smtp_host, smtp_port) as server:
+            server.starttls()
+            server.login(smtp_user, smtp_pass)
+            server.sendmail(smtp_user, recipients, msg.as_string())
+        print(f"Reminder email sent to: {recipients}")
+    except Exception as e:
+        print(f"Failed to send reminder email: {e}")
+
+
 def send_approval_email(changed_by, change_summary):
     # Sends an email to all approvers listed in APPROVER_EMAILS.
     # change_summary is a list of strings describing each changed value.
-    smtp_host    = os.getenv("SMTP_HOST")
-    smtp_port    = int(os.getenv("SMTP_PORT", 587))
-    smtp_user    = os.getenv("SMTP_USER")
-    smtp_pass    = os.getenv("SMTP_PASSWORD")
-    grafana_url  = os.getenv("GRAFANA_URL", "your Grafana dashboard")
+    smtp_host    = (os.getenv("SMTP_HOST") or "").strip()
+    smtp_port    = int((os.getenv("SMTP_PORT") or "587").strip())
+    smtp_user    = (os.getenv("SMTP_USER") or "").strip()
+    smtp_pass    = (os.getenv("SMTP_PASSWORD") or "").strip()
+    grafana_url  = (os.getenv("GRAFANA_URL") or "your Grafana dashboard").strip()
     recipients   = [e.strip() for e in os.getenv("APPROVER_EMAILS", "").split(",") if e.strip()]
 
     if not recipients:
@@ -176,6 +311,8 @@ Please review and give your approval by visiting the Grafana dashboard:
 If you approve, the new thresholds will be applied to the system.
 If you reject, the current thresholds will remain unchanged.
 
+Note: If no action is taken, this request will automatically expire after 48 hours.
+
 This is an automated message from the Merwede Bridge monitoring system.
 """
 
@@ -193,6 +330,65 @@ This is an automated message from the Merwede Bridge monitoring system.
         print(f"Approval email sent to: {recipients}")
     except Exception as e:
         print(f"Failed to send approval email: {e}")
+
+
+def send_requester_notification(to_email, changed_by, action, change_summary, reason=""):
+    # Emails the person who submitted the change request to inform them of the outcome.
+    # action is one of: 'approved', 'rejected', 'expired'
+    # If no requester email is stored, falls back to SMTP_USER (the configured sender account).
+    smtp_host = (os.getenv("SMTP_HOST") or "").strip()
+    smtp_port = int((os.getenv("SMTP_PORT") or "587").strip())
+    smtp_user = (os.getenv("SMTP_USER") or "").strip()
+    smtp_pass = (os.getenv("SMTP_PASSWORD") or "").strip()
+
+    to_email = (to_email or "").strip() or smtp_user  # fall back to SMTP_USER when empty
+
+    print(f"[notify] action={action}, to='{to_email}', changed_by='{changed_by}'")
+
+    if not smtp_host or not smtp_user or not smtp_pass:
+        print(f"[notify] SKIPPED — SMTP not configured in .env "
+              f"(SMTP_HOST='{smtp_host}', SMTP_USER='{smtp_user}', SMTP_PASSWORD={'set' if smtp_pass else 'MISSING'})")
+        return
+
+    print(f"[notify] Connecting to {smtp_host}:{smtp_port} as {smtp_user} ...")
+
+    outcomes = {
+        "approved": "Your threshold change request has been APPROVED. The new values are now active.",
+        "rejected": "Your threshold change request has been REJECTED. No changes have been applied.",
+        "expired":  "Your threshold change request has EXPIRED after 48 hours with no action taken. No changes have been applied.",
+    }
+    outcome_message = outcomes.get(action, f"Your threshold change request status: {action}.")
+    change_lines = "\n".join(f"  - {line}" for line in change_summary)
+    reason_line  = f"\nReason given: {reason}" if reason else ""
+
+    body = f"""\
+Dear {changed_by},
+
+{outcome_message}
+
+The following changes were requested:
+
+{change_lines}{reason_line}
+
+This is an automated message from the Merwede Bridge monitoring system.
+"""
+
+    msg = MIMEMultipart()
+    msg["From"]    = smtp_user
+    msg["To"]      = to_email
+    msg["Subject"] = f"[Merwedebrug] Your threshold change request has been {action} — {changed_by}"
+    msg.attach(MIMEText(body, "plain"))
+
+    try:
+        with smtplib.SMTP(smtp_host, smtp_port) as server:
+            server.ehlo()
+            server.starttls()
+            server.ehlo()
+            server.login(smtp_user, smtp_pass)
+            server.sendmail(smtp_user, [to_email], msg.as_string())
+        print(f"[notify] Email sent to {to_email}")
+    except Exception as e:
+        print(f"[notify] SMTP error: {e}")
 
 
 @app.route("/trigger_values", methods=["POST"])
@@ -225,10 +421,15 @@ def save_trigger_values():
 
     data = request.get_json()
     print(f"Trigger values received: {data}")
-    now = datetime.now(timezone.utc)
-    changed_by = data.get("changed_by", "unknown")
+    now              = datetime.now(timezone.utc)
+    changed_by       = data.get("changed_by", "unknown")
+    changed_by_email = data.get("changed_by_email", "")
 
     with engine.connect() as conn:
+        # Expire rows older than 48 h and send reminder for rows older than 24 h
+        _expire_pending_requests(conn)
+        _check_and_send_reminders(conn)
+
         # Reject if a pending request already exists
         pending_count = conn.execute(text(
             "SELECT COUNT(*) FROM trigger_values_pending WHERE status = 'pending'"
@@ -291,16 +492,17 @@ def save_trigger_values():
                     obj     = f"{category} — {level}"
                     conn.execute(text("""
                         INSERT INTO trigger_values_pending
-                            (submitted_at, category, object, old_value, new_value, status, changed_by)
+                            (submitted_at, category, object, old_value, new_value, status, changed_by, changed_by_email)
                         VALUES
-                            (:submitted_at, :category, :object, :old_value, :new_value, 'pending', :changed_by)
+                            (:submitted_at, :category, :object, :old_value, :new_value, 'pending', :changed_by, :changed_by_email)
                     """), {
-                        "submitted_at": now,
-                        "category":     "trigger_value",
-                        "object":       obj,
-                        "old_value":    to_py(old_val),
-                        "new_value":    to_py(new_val),
-                        "changed_by":   changed_by,
+                        "submitted_at":    now,
+                        "category":        "trigger_value",
+                        "object":          obj,
+                        "old_value":       to_py(old_val),
+                        "new_value":       to_py(new_val),
+                        "changed_by":      changed_by,
+                        "changed_by_email": changed_by_email,
                     })
                     summary_line = f"{obj}: {old_val} → {new_val} {unit}"
                     change_summary.append(summary_line)
@@ -372,7 +574,7 @@ def get_trigger_values():
 
 @app.route("/request_status", methods=["GET"])
 def get_request_status():
-    # Returns the current change-request status message for display in Grafana.
+    # Returns the current change-request status message for display in a Grafana text panel.
     with engine.connect() as conn:
         result = conn.execute(text(
             "SELECT status_message, updated_at FROM request_status WHERE id = 1"
@@ -460,11 +662,9 @@ def review_pending():
             # Only log approved changes to event_log
             if status == "approved":
                 description = (
-                    f"Threshold change {status} by {reviewed_by}. "
-                    f"Object: {pending['object']}, "
-                    f"old value: {pending['old_value']}, "
-                    f"new value: {pending['new_value']}. "
-                    f"Reason: {reason or 'none'}"
+                    f"'{pending['object']}' changed from {pending['old_value']} to {pending['new_value']}. "
+                    f"Approved by {reviewed_by}. "
+                    f"Reason: {reason or 'none'}."
                 )
                 conn.execute(text("""
                     INSERT INTO event_log (timestamp, source, element, metric, unit, description)
@@ -484,10 +684,33 @@ def review_pending():
         conn.commit()
         print(f"All pending rows processed → {status} by {reviewed_by}")
 
+    change_summary = [f"{p['object']}: {p['old_value']} → {p['new_value']}" for p in pending_rows]
+    send_requester_notification(
+        pending_rows[0].get("changed_by_email") or "",
+        pending_rows[0].get("changed_by") or "unknown",
+        status,
+        change_summary,
+        reason,
+    )
+
     return jsonify({"status": "ok", "message": f"{len(pending_rows)} change(s) {status} by {reviewed_by}."})
+
+
+def _background_check_loop():
+    # Runs every hour in a daemon thread: sends 24 h reminders and expires 48 h requests.
+    while True:
+        time.sleep(3600)
+        try:
+            with engine.connect() as conn:
+                _expire_pending_requests(conn)
+                _check_and_send_reminders(conn)
+                conn.commit()
+        except Exception as e:
+            print(f"Background check error: {e}")
 
 
 if __name__ == "__main__":
     create_tables()
+    threading.Thread(target=_background_check_loop, daemon=True).start()
     print("Logbook API running on port 5050")
     app.run(host="0.0.0.0", port=5050)
